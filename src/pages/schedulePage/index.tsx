@@ -5,6 +5,7 @@ import Calendar from './components/Calendar';
 const Container = styled.div`
     display: flex;
     flex-direction: column;
+    padding: 20px;
 `;
 const Section = styled.div`
     margin-top: 20px;
@@ -22,6 +23,7 @@ const Title = styled.div`
 `;
 const TodoList = styled.div`
     margin-top: 70px;
+    margin-right: 10px;
     width: 400px;
     height: 550px;
     display: flex;
