@@ -19,10 +19,19 @@ const Container = styled.div`
 //     solMonth: 12,
 // };
 
-const Calendar = () => {
-    const [nowDate, setNowDate] = useState<Date>(new Date());
-    const [clickedDate, setClickedDate] = useState<Date>();
-    console.log('in calendar.tsx', { nowDate }, { clickedDate });
+interface Props {
+    nowDate: Date;
+    setNowDate: React.Dispatch<React.SetStateAction<Date>>;
+    clickedDate: Date;
+    setClickedDate: React.Dispatch<React.SetStateAction<Date>>;
+    // holiday: Holiday[];
+}
+
+const Calendar = ({ nowDate, setNowDate, clickedDate, setClickedDate }: Props) => {
+    console.log('in calendar.tsx', { nowDate }, { clickedDate }); //test code
+    //api 문서대로 date 형식 formating 필요?
+    //물어보장
+
     // const [holiday, setholiday] = useState<Holiday[]>([]);
 
     // const getHoliday = async () => {

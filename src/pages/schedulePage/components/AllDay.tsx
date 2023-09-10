@@ -56,8 +56,8 @@ interface Props {
     day: Date;
     nowDate: Date;
     setNowDate: React.Dispatch<React.SetStateAction<Date>>;
-    clickedDate: Date | undefined;
-    setClickedDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+    clickedDate: Date;
+    setClickedDate: React.Dispatch<React.SetStateAction<Date>>;
     // isHoliday: boolean;
 }
 

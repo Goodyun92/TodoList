@@ -55,29 +55,74 @@ const TodoContent = styled.div`
 `;
 
 const SchedulePage = () => {
-    type ScheduleContent = {
+    //일정 type
+    type ScheduleType = {
+        planId: number;
+        date: string;
         content: string;
-        complete: boolean;
-        emoji: number;
+        checkStatus: boolean;
+        review: string;
     };
-    //fontawesome에서 가져와서
-    //emoji에 따라 사용
 
-    const [schedule, setSchedule] = useState<ScheduleContent[]>([]);
+    //일정 받아올 배열
+    const [schedules, setSchedules] = useState<ScheduleType[]>();
+
+    //날짜 state
+    const [nowDate, setNowDate] = useState<Date>(new Date());
+    const [clickedDate, setClickedDate] = useState<Date>(nowDate);
+
+    //일정 state
+    const [scheduleState, setScheduleState] = useState<ScheduleType>();
+
+    //formated date
+    const [formattedDate, setFormattedDate] = useState<string>();
+
+    useEffect(() => {
+        //YYMMDD형식으로 변경 formatted
+        const year = clickedDate.getFullYear().toString().slice(-2); // 뒤의 두 자리만 추출
+        const month = (clickedDate.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 1을 더해주고, 두 자리 문자열로 만듦
+        const day = clickedDate.getDate().toString().padStart(2, '0'); // 두 자리 문자열로 만듦
+        setFormattedDate(year + month + day);
+
+        //axios
+        //clickedDate의 날짜의 일정 받아와서 schedules에 저장
+    }, [clickedDate]);
 
     return (
         <Container>
             <Title>Easy Calendar</Title>
+            <button>로그아웃</button>
             <Section>
-                <Calendar />
+                <Calendar
+                    nowDate={nowDate}
+                    setNowDate={setNowDate}
+                    clickedDate={clickedDate}
+                    setClickedDate={setClickedDate}
+                    // holiday={holiday}
+                />
                 <TodoList>
                     <ListNav>
                         <div>LIST</div>
-                        <div> 날짜 </div>
+                        <div>{formattedDate}</div>
                         <button>추가</button>
                     </ListNav>
+
+                    {/* 바뀐 plan 내용 저장할 state 만들고 axios할때 쓰기
+                    input에서 onchange */}
                     <ListBody>
                         {/* schedule배열요소 map해서 쓰기 */}
+                        {schedules?.map((plan) => (
+                            <div key={plan.planId}>
+                                {plan.checkStatus ? <button></button> : <button></button>}
+
+                                <input value={plan.content} />
+                                <input value={plan.review} />
+
+                                <button>수정</button>
+                                <button>삭제</button>
+                            </div>
+                        ))}
+
                         <TodoContent>예시 과제하기</TodoContent>
                         <TodoContent>예시 숙제하기</TodoContent>
                         <TodoContent>예시 게임하기</TodoContent>

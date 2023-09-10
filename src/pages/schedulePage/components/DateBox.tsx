@@ -14,13 +14,13 @@ const Container = styled.div`
 interface Props {
     nowDate: Date;
     setNowDate: React.Dispatch<React.SetStateAction<Date>>;
-    clickedDate: Date | undefined;
-    setClickedDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+    clickedDate: Date;
+    setClickedDate: React.Dispatch<React.SetStateAction<Date>>;
     // holiday: Holiday[];
 }
 
 const dateToyyyymmdd = (date: Date): string => {
-    const year = date.getFullYear();
+    const year = date.getFullYear() - 2000;
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
 
