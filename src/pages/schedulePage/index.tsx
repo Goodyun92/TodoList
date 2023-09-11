@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Calendar from './components/Calendar';
+import axios from 'axios';
+import { useRecoilState } from 'recoil';
+import { userState } from '../../recoil/atom';
+import { UserType } from '../../interfaces/interfaces';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
     display: flex;
@@ -55,6 +60,11 @@ const TodoContent = styled.div`
 `;
 
 const SchedulePage = () => {
+    const navigate = useNavigate();
+
+    //user 정보
+    const [userInfo, setUserInfo] = useRecoilState<UserType>(userState);
+
     //일정 type
     type ScheduleType = {
         planId: number;
@@ -65,33 +75,113 @@ const SchedulePage = () => {
     };
 
     //일정 받아올 배열
-    const [schedules, setSchedules] = useState<ScheduleType[]>();
+    const [schedules, setSchedules] = useState<ScheduleType[]>([]);
 
     //날짜 state
     const [nowDate, setNowDate] = useState<Date>(new Date());
     const [clickedDate, setClickedDate] = useState<Date>(nowDate);
 
-    //일정 state
-    const [scheduleState, setScheduleState] = useState<ScheduleType>();
+    //새로 생성할 content
+    const [newContent, setNewContent] = useState<string>('');
 
-    //formated date
-    const [formattedDate, setFormattedDate] = useState<string>();
-
-    useEffect(() => {
+    const getPlan = () => {
         //YYMMDD형식으로 변경 formatted
         const year = clickedDate.getFullYear().toString().slice(-2); // 뒤의 두 자리만 추출
         const month = (clickedDate.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 1을 더해주고, 두 자리 문자열로 만듦
         const day = clickedDate.getDate().toString().padStart(2, '0'); // 두 자리 문자열로 만듦
-        setFormattedDate(year + month + day);
-
+        const date = year + month + day; //axios할때 쓰기
+        console.log(date);
+        console.log(userInfo.userId);
         //axios
         //clickedDate의 날짜의 일정 받아와서 schedules에 저장
+        axios
+            .get(`https://www.mytodo.shop/api/plans/${userInfo.userId}/get-plan`, {
+                params: {
+                    date: date,
+                },
+            })
+            .then((response) => {
+                console.log(response.data);
+                setSchedules(response.data);
+            });
+    };
+
+    useEffect(() => {
+        getPlan();
     }, [clickedDate]);
+
+    const handlePlanChange = (idx: number, key: string, value: string) => {
+        const updatedPlan = [...schedules];
+        updatedPlan[idx] = { ...updatedPlan[idx], [key]: value };
+        setSchedules(updatedPlan);
+        console.log(schedules);
+    };
+
+    const handlePlanUpdate = (idx: number, id: number) => {
+        axios
+            .patch(`https://www.mytodo.shop/api/plans/${userInfo.userId}/update-plan/${id}`, {
+                date: schedules[idx].date,
+                content: schedules[idx].content,
+                checkStatus: schedules[idx].checkStatus,
+                review: schedules[idx].review,
+            })
+            .then((response) => {
+                console.log(response.data);
+                getPlan();
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const handlePlanDelete = (id: number) => {
+        axios
+            .delete(`https://www.mytodo.shop/api/plans/${userInfo.userId}/delete-plan/${id}`)
+            .then((response) => {
+                console.log(response.data);
+                getPlan();
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const changePostPlan = (e: any) => {
+        setNewContent(e.target.value);
+    };
+    const postPlan = () => {
+        //YYMMDD형식으로 변경 formatted
+        const year = clickedDate.getFullYear().toString().slice(-2); // 뒤의 두 자리만 추출
+        const month = (clickedDate.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 1을 더해주고, 두 자리 문자열로 만듦
+        const day = clickedDate.getDate().toString().padStart(2, '0'); // 두 자리 문자열로 만듦
+        const date = year + month + day; //axios할때 쓰기
+
+        axios
+            .post(`https://www.mytodo.shop/api/plans/${userInfo.userId}/post-plan`, {
+                date: date,
+                content: newContent,
+                checkStatus: false,
+                review: '',
+            })
+            .then((response) => {
+                console.log(response.data);
+                setNewContent('');
+                getPlan();
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const logOut = () => {
+        navigate('/login');
+    };
 
     return (
         <Container>
             <Title>Easy Calendar</Title>
-            <button>로그아웃</button>
+            <div>{userInfo.userName}님의 TODO-LIST</div>
+            <button onClick={logOut}>로그아웃</button>
             <Section>
                 <Calendar
                     nowDate={nowDate}
@@ -102,47 +192,41 @@ const SchedulePage = () => {
                 />
                 <TodoList>
                     <ListNav>
-                        <div>LIST</div>
-                        <div>{formattedDate}</div>
-                        <button>추가</button>
+                        {/* <div>LIST</div> */}
+                        <div>일정 목록</div>
+                        {/* <button>추가</button> */}
                     </ListNav>
 
-                    {/* 바뀐 plan 내용 저장할 state 만들고 axios할때 쓰기
+                    {/* 바뀐 plan 내용 저장할 newPlan state 만들고 axios할때 쓰기
                     input에서 onchange */}
                     <ListBody>
                         {/* schedule배열요소 map해서 쓰기 */}
-                        {schedules?.map((plan) => (
-                            <div key={plan.planId}>
+                        {schedules?.map((plan, idx) => (
+                            <TodoContent key={idx}>
                                 {plan.checkStatus ? <button></button> : <button></button>}
 
-                                <input value={plan.content} />
-                                <input value={plan.review} />
+                                <input
+                                    value={plan.content}
+                                    onChange={(e) => {
+                                        handlePlanChange(idx, 'content', e.target.value);
+                                    }}
+                                />
+                                <input
+                                    value={plan.review}
+                                    onChange={(e) => {
+                                        handlePlanChange(idx, 'review', e.target.value);
+                                    }}
+                                />
 
-                                <button>수정</button>
-                                <button>삭제</button>
-                            </div>
+                                <button onClick={() => handlePlanUpdate(idx, plan.planId)}>수정</button>
+                                <button onClick={() => handlePlanDelete(plan.planId)}>삭제</button>
+                            </TodoContent>
                         ))}
 
-                        <TodoContent>예시 과제하기</TodoContent>
-                        <TodoContent>예시 숙제하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
-                        <TodoContent>예시 게임하기</TodoContent>
+                        <TodoContent>
+                            <input placeholder="일정 추가하기" value={newContent} onChange={changePostPlan} />
+                            <button onClick={postPlan}>추가</button>
+                        </TodoContent>
                     </ListBody>
                 </TodoList>
             </Section>
