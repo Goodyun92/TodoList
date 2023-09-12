@@ -6,6 +6,7 @@ import { useRecoilState } from 'recoil';
 import { userState } from '../../recoil/atom';
 import { UserType } from '../../interfaces/interfaces';
 import { useNavigate } from 'react-router-dom';
+import check from '../../imgs/check.png';
 
 const Container = styled.div`
     display: flex;
@@ -20,32 +21,62 @@ const Section = styled.div`
     align-items: center;
     height: 700px;
 `;
+const Nav = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
 const Title = styled.div`
     margin: 30px 0px 30px 50px;
-    font-size: 45px;
+    font-size: 50px;
     font-weight: 600;
     font-style: italic;
 `;
+const UserNav = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-right: 40px;
+    margin-top: 10px;
+`;
+const UserName = styled.div`
+    font-size: 15px;
+    font-weight: 600;
+    border-bottom: 3px solid;
+    padding: 5px;
+    margin-top: 5px;
+`;
+const LogoutButton = styled.button`
+    border: none;
+    border-radius: 5px;
+    background-color: #d9d9d9;
+    padding: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    &:hover {
+        background-color: #bfbfbf;
+    }
+`;
 const TodoList = styled.div`
     margin-top: 70px;
-    margin-right: 10px;
-    width: 400px;
+    margin-right: 30px;
+    width: 470px;
     height: 550px;
     display: flex;
     flex-direction: column;
     border: none;
     background-color: #d9d9d9;
     border-radius: 25px;
-    padding: 10px;
 `;
 const ListNav = styled.div`
     display: flex;
     justify-content: space-between;
-    border-bottom: solid;
+    border-bottom: 2.5px solid;
     padding: 15px;
 `;
 const ListBody = styled.div`
-    padding: 10px;
+    padding: 0px 15px;
     /* height: 100%; */
     display: flex;
     flex-direction: column;
@@ -53,10 +84,65 @@ const ListBody = styled.div`
     &::-webkit-scrollbar {
         display: none;
     }
-    gap: 20px;
 `;
 const TodoContent = styled.div`
     border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0px 10px 0px;
+    border-top: 0.5px solid;
+`;
+const CheckButton = styled.button`
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    border: solid;
+    background-color: whitesmoke;
+`;
+const CheckImg = styled.img`
+    border: none;
+    width: 15px;
+    height: 15px;
+`;
+const None = styled.div`
+    width: 15px;
+    height: 15px;
+`;
+
+const InputWrap = styled.div``;
+const Input = styled.input`
+    margin: 0px 10px;
+    border: none;
+    background-color: lightgray;
+    width: 90%;
+    height: 25px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 5px;
+`;
+const ReviewInput = styled(Input)`
+    font-size: 20px;
+    background-color: #d9d9d9;
+    &::placeholder {
+        font-size: 12px;
+    }
+`;
+const Button = styled.button`
+    width: 55px;
+    border: none;
+    border-radius: 10px;
+    background-color: lightgray;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    &:hover {
+        background-color: #bfbfbf;
+    }
 `;
 
 const SchedulePage = () => {
@@ -109,6 +195,26 @@ const SchedulePage = () => {
     useEffect(() => {
         getPlan();
     }, [clickedDate]);
+
+    const handleCheck = (idx: number, id: number) => {
+        const updatedPlan = [...schedules];
+        updatedPlan[idx] = { ...updatedPlan[idx], checkStatus: !updatedPlan[idx].checkStatus };
+
+        axios
+            .patch(`https://www.mytodo.shop/api/plans/${userInfo.userId}/update-plan/${id}`, {
+                date: updatedPlan[idx].date,
+                content: updatedPlan[idx].content,
+                checkStatus: updatedPlan[idx].checkStatus,
+                review: updatedPlan[idx].review,
+            })
+            .then((response) => {
+                console.log(response.data);
+                getPlan();
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
 
     const handlePlanChange = (idx: number, key: string, value: string) => {
         const updatedPlan = [...schedules];
@@ -179,9 +285,13 @@ const SchedulePage = () => {
 
     return (
         <Container>
-            <Title>Easy Calendar</Title>
-            <div>{userInfo.userName}님의 TODO-LIST</div>
-            <button onClick={logOut}>로그아웃</button>
+            <Nav>
+                <Title>Easy Calendar</Title>
+                <UserNav>
+                    <UserName>{userInfo.userName}님</UserName>
+                    <LogoutButton onClick={logOut}>로그아웃</LogoutButton>
+                </UserNav>
+            </Nav>
             <Section>
                 <Calendar
                     nowDate={nowDate}
@@ -192,9 +302,7 @@ const SchedulePage = () => {
                 />
                 <TodoList>
                     <ListNav>
-                        {/* <div>LIST</div> */}
                         <div>일정 목록</div>
-                        {/* <button>추가</button> */}
                     </ListNav>
 
                     {/* 바뀐 plan 내용 저장할 newPlan state 만들고 axios할때 쓰기
@@ -203,29 +311,34 @@ const SchedulePage = () => {
                         {/* schedule배열요소 map해서 쓰기 */}
                         {schedules?.map((plan, idx) => (
                             <TodoContent key={idx}>
-                                {plan.checkStatus ? <button></button> : <button></button>}
+                                <CheckButton onClick={() => handleCheck(idx, plan.planId)}>
+                                    {plan.checkStatus ? <CheckImg src={check} /> : <None />}
+                                </CheckButton>
 
-                                <input
-                                    value={plan.content}
-                                    onChange={(e) => {
-                                        handlePlanChange(idx, 'content', e.target.value);
-                                    }}
-                                />
-                                <input
-                                    value={plan.review}
-                                    onChange={(e) => {
-                                        handlePlanChange(idx, 'review', e.target.value);
-                                    }}
-                                />
+                                <InputWrap>
+                                    <Input
+                                        value={plan.content}
+                                        onChange={(e) => {
+                                            handlePlanChange(idx, 'content', e.target.value);
+                                        }}
+                                    />
+                                    <ReviewInput
+                                        placeholder="이모티콘으로 감정을 표현해보세요!"
+                                        value={plan.review}
+                                        onChange={(e) => {
+                                            handlePlanChange(idx, 'review', e.target.value);
+                                        }}
+                                    />
+                                </InputWrap>
 
-                                <button onClick={() => handlePlanUpdate(idx, plan.planId)}>수정</button>
-                                <button onClick={() => handlePlanDelete(plan.planId)}>삭제</button>
+                                <Button onClick={() => handlePlanUpdate(idx, plan.planId)}>수정</Button>
+                                <Button onClick={() => handlePlanDelete(plan.planId)}>삭제</Button>
                             </TodoContent>
                         ))}
 
                         <TodoContent>
-                            <input placeholder="일정 추가하기" value={newContent} onChange={changePostPlan} />
-                            <button onClick={postPlan}>추가</button>
+                            <Input placeholder="일정 추가하기" value={newContent} onChange={changePostPlan} />
+                            <Button onClick={postPlan}>추가</Button>
                         </TodoContent>
                     </ListBody>
                 </TodoList>
