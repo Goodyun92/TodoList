@@ -20,7 +20,7 @@ const Title = styled.div`
     margin-bottom: 40px;
 `;
 const Input = styled.input`
-    width: 350px;
+    width: 330px;
     height: 30px;
     margin: 10px;
     border: none;
@@ -46,7 +46,7 @@ const LoginButton = styled.button`
 `;
 
 const SignupButton = styled.button`
-    width: 60px;
+    width: auto;
     height: 30px;
     margin: 10px;
     background-color: #ffffff;
