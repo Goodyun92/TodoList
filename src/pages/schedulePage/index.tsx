@@ -12,6 +12,9 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     padding: 20px;
+    @media (max-width: 575px) {
+        padding: 5px;
+    }
 `;
 const Section = styled.div`
     margin-top: 20px;
@@ -20,16 +23,37 @@ const Section = styled.div`
     justify-content: center;
     align-items: center;
     height: 700px;
+    @media (max-width: 575px) {
+        display: flex;
+        flex-direction: column;
+        margin-top: 30px;
+        margin-bottom: 50px;
+        gap: 20px;
+        height: auto;
+    }
 `;
 const Nav = styled.div`
     display: flex;
     justify-content: space-between;
+    @media (max-width: 575px) {
+        flex-direction: column;
+        margin-top: 20px;
+        background-color: white;
+        width: 100%;
+    }
 `;
 const Title = styled.div`
     margin: 30px 0px 30px 50px;
     font-size: 50px;
     font-weight: 600;
     font-style: italic;
+    @media (max-width: 575px) {
+        margin: 0px;
+        width: 100%;
+        justify-self: center;
+        text-align: center;
+        margin-bottom: 30px;
+    }
 `;
 const UserNav = styled.div`
     display: flex;
@@ -38,6 +62,10 @@ const UserNav = styled.div`
     gap: 20px;
     margin-right: 40px;
     margin-top: 10px;
+    @media (max-width: 575px) {
+        width: 100%;
+        justify-self: center;
+    }
 `;
 const UserName = styled.div`
     font-size: 15px;
@@ -68,6 +96,11 @@ const TodoList = styled.div`
     border: none;
     background-color: #d9d9d9;
     border-radius: 25px;
+    @media (max-width: 575px) {
+        width: 100%;
+        margin: 0px;
+        margin-top: 10px;
+    }
 `;
 const ListNav = styled.div`
     display: flex;

@@ -11,6 +11,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.div`
+    width: 330px;
     font-size: 30px;
     font-weight: 600;
     margin-bottom: 40px;
@@ -19,7 +20,7 @@ const Title = styled.div`
     }
 `;
 const Input = styled.input`
-    width: 350px;
+    width: 330px;
     height: 30px;
     margin: 10px;
     border: none;

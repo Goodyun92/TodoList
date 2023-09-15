@@ -10,6 +10,12 @@ const Container = styled.div`
     height: 700px;
     display: flex;
     flex-direction: column;
+    @media (max-width: 575px) {
+        width: 100%;
+        margin-top: 20px;
+        border-top: 2px solid;
+        border-bottom: 2px solid;
+    }
 `;
 
 // const requestData = {

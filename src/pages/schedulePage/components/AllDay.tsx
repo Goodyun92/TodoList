@@ -50,6 +50,14 @@ const Container = styled.div<ContainerProps>`
                   `
                 : css``}
     }
+
+    @media (max-width: 575px) {
+        gap: 5px;
+        p {
+            width: 40px;
+            height: 40px;
+        }
+    }
 `;
 
 interface Props {
