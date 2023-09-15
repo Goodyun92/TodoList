@@ -213,16 +213,17 @@ const SchedulePage = () => {
         console.log(userInfo.userId);
         //axios
         //clickedDate의 날짜의 일정 받아와서 schedules에 저장
-        axios
-            .get(`https://www.mytodo.shop/api/plans/${userInfo.userId}/get-plan`, {
-                params: {
-                    date: date,
-                },
-            })
-            .then((response) => {
-                console.log(response.data);
-                setSchedules(response.data);
-            });
+        userInfo.userId > 0 &&
+            axios
+                .get(`https://www.mytodo.shop/api/plans/${userInfo.userId}/get-plan`, {
+                    params: {
+                        date: date,
+                    },
+                })
+                .then((response) => {
+                    console.log(response.data);
+                    setSchedules(response.data);
+                });
     };
 
     useEffect(() => {
@@ -295,21 +296,22 @@ const SchedulePage = () => {
         const day = clickedDate.getDate().toString().padStart(2, '0'); // 두 자리 문자열로 만듦
         const date = year + month + day; //axios할때 쓰기
 
-        axios
-            .post(`https://www.mytodo.shop/api/plans/${userInfo.userId}/post-plan`, {
-                date: date,
-                content: newContent,
-                checkStatus: false,
-                review: '',
-            })
-            .then((response) => {
-                console.log(response.data);
-                setNewContent('');
-                getPlan();
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        userInfo.userId > 0 &&
+            axios
+                .post(`https://www.mytodo.shop/api/plans/${userInfo.userId}/post-plan`, {
+                    date: date,
+                    content: newContent,
+                    checkStatus: false,
+                    review: '',
+                })
+                .then((response) => {
+                    console.log(response.data);
+                    setNewContent('');
+                    getPlan();
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
     };
 
     const logOut = () => {
