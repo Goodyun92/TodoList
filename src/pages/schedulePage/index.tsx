@@ -137,13 +137,19 @@ const CheckButton = styled.button`
     background-color: whitesmoke;
 `;
 const CheckImg = styled.img`
-    border: none;
     width: 15px;
     height: 15px;
+    border-radius: 5px;
+    border: solid;
 `;
 const None = styled.div`
-    width: 15px;
+    width: 55px;
     height: 15px;
+    border-radius: 5px;
+    border: solid;
+    @media (max-width: 575px) {
+        width: 30px;
+    }
 `;
 
 const InputWrap = styled.div``;
@@ -346,9 +352,13 @@ const SchedulePage = () => {
                         {/* schedule배열요소 map해서 쓰기 */}
                         {schedules?.map((plan, idx) => (
                             <TodoContent key={idx}>
-                                <CheckButton onClick={() => handleCheck(idx, plan.planId)}>
-                                    {plan.checkStatus ? <CheckImg src={check} /> : <None />}
-                                </CheckButton>
+                                {/* <CheckButton onClick={() => handleCheck(idx, plan.planId)}> */}
+                                {plan.checkStatus ? (
+                                    <CheckImg src={check} onClick={() => handleCheck(idx, plan.planId)} />
+                                ) : (
+                                    <None onClick={() => handleCheck(idx, plan.planId)} />
+                                )}
+                                {/* </CheckButton> */}
 
                                 <InputWrap>
                                     <Input
