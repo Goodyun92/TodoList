@@ -12,7 +12,7 @@ function App() {
         <RecoilRoot>
             <Router>
                 <Routes>
-                    <Route path="/" element={<Navigate to="/login" />} />
+                    <Route path="/" element={<Navigate to="/schedulePage" />} />
                     <Route path="/schedulePage" element={<SchedulPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/signup" element={<SignUpPage />} />

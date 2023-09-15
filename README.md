@@ -2,8 +2,8 @@
 
 > https://myeasytodolist.vercel.app
 
-> https://myeasytodolist.vercel.app/schedulePage
-
 ---
 
-responsive view for mobile !!
+### Responsive web
+
+mobile size view

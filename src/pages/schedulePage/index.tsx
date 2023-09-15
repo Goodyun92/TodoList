@@ -330,7 +330,11 @@ const SchedulePage = () => {
                 <Title>Easy Calendar</Title>
                 <UserNav>
                     <UserName>{userInfo.userName}님</UserName>
-                    <LogoutButton onClick={logOut}>로그아웃</LogoutButton>
+                    {userInfo.userId > 0 ? (
+                        <LogoutButton onClick={logOut}>로그아웃</LogoutButton>
+                    ) : (
+                        <LogoutButton onClick={logOut}>로그인</LogoutButton>
+                    )}
                 </UserNav>
             </Nav>
             <Section>

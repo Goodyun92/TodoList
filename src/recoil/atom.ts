@@ -8,8 +8,8 @@ export const userState = atom<UserType>({
     key: 'userState',
     default: {
         userId: 0,
-        userName: '',
-        password: '',
+        userName: 'Guest',
+        password: 'Guest',
     },
     effects_UNSTABLE: [persistAtom],
 });
