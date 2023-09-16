@@ -7,6 +7,7 @@ import { userState } from '../../recoil/atom';
 import { UserType } from '../../interfaces/interfaces';
 import { useNavigate } from 'react-router-dom';
 import check from '../../imgs/check.png';
+import none from '../../imgs/none.png';
 
 const Container = styled.div`
     display: flex;
@@ -127,31 +128,14 @@ const TodoContent = styled.div`
     padding: 10px 0px 10px 0px;
     border-top: 0.5px solid;
 `;
-const CheckButton = styled.button`
-    width: 30px;
-    height: 30px;
-    align-items: center;
-    justify-content: center;
-    border-radius: 5px;
-    border: solid;
-    background-color: whitesmoke;
-`;
 const CheckImg = styled.img`
     width: 15px;
     height: 15px;
     border-radius: 5px;
     border: solid;
+    padding: 1%;
+    background-color: whitesmoke;
 `;
-const None = styled.div`
-    width: 55px;
-    height: 15px;
-    border-radius: 5px;
-    border: solid;
-    @media (max-width: 575px) {
-        width: 30px;
-    }
-`;
-
 const InputWrap = styled.div``;
 const Input = styled.input`
     margin: 0px 10px;
@@ -321,6 +305,14 @@ const SchedulePage = () => {
     };
 
     const logOut = () => {
+        setUserInfo({
+            userId: 0,
+            userName: 'Guest',
+            password: 'Guest',
+        });
+        navigate('/login');
+    };
+    const logIn = () => {
         navigate('/login');
     };
 
@@ -333,7 +325,7 @@ const SchedulePage = () => {
                     {userInfo.userId > 0 ? (
                         <LogoutButton onClick={logOut}>로그아웃</LogoutButton>
                     ) : (
-                        <LogoutButton onClick={logOut}>로그인</LogoutButton>
+                        <LogoutButton onClick={logIn}>로그인</LogoutButton>
                     )}
                 </UserNav>
             </Nav>
@@ -356,13 +348,11 @@ const SchedulePage = () => {
                         {/* schedule배열요소 map해서 쓰기 */}
                         {schedules?.map((plan, idx) => (
                             <TodoContent key={idx}>
-                                {/* <CheckButton onClick={() => handleCheck(idx, plan.planId)}> */}
                                 {plan.checkStatus ? (
                                     <CheckImg src={check} onClick={() => handleCheck(idx, plan.planId)} />
                                 ) : (
-                                    <None onClick={() => handleCheck(idx, plan.planId)} />
+                                    <CheckImg src={none} onClick={() => handleCheck(idx, plan.planId)} />
                                 )}
-                                {/* </CheckButton> */}
 
                                 <InputWrap>
                                     <Input

@@ -58,10 +58,11 @@ export const SignUpPage = () => {
                 password: password,
             });
 
-            alert('Signup Successful');
+            alert('회원가입이 완료되었습니다!');
             navigate('/login');
-        } catch (error) {
-            console.error('Signup failed:', error);
+        } catch (error: any) {
+            console.error('Signup failed:', error.response.data);
+            alert('입력하신 ID가 이미 존재합니다.');
         }
     };
 

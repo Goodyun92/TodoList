@@ -86,6 +86,7 @@ export const LoginPage = () => {
             navigate('/schedulePage');
         } catch (error) {
             console.error('Login failed:', error);
+            alert('아이디 또는 비밀번호가 일치하지 않습니다.');
         }
     };
 
